@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
@@ -18,6 +20,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank]
+    #[Assert\Email(
+        groups: ['registration'],
+        message: "Cet email {{ value }} n'est pas une adresse email valide"
+    )]
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
@@ -30,6 +37,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
+
+    #[Assert\Length(
+        groups: ['registration'],
+        min:6
+    )]
+    #[Assert\NotBlank(
+        groups: ['registration']
+    )]
     #[ORM\Column]
     private ?string $password = null;
 

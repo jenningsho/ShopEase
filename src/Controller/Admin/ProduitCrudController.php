@@ -3,8 +3,13 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Produit;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
@@ -15,13 +20,42 @@ class ProduitCrudController extends AbstractCrudController
         return Produit::class;
     }
 
+    // Configurer les options du crud
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+        // nom d'affichage des entités
+        ->setEntityLabelInSingular('Produit')
+        ->setEntityLabelInPlural('Produits')
+        ;
+    }
+
     
     public function configureFields(string $pageName): iterable
     {
+        
+        $required = true;
+        if($pageName == 'edit'){
+            $required = false;
+        }
         return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
+            TextField::new('nom')
+            ->setLabel("Nom")
+            ->setHelp("Nom de votre produit")
+            ,
+            TextEditorField::new('description')
+            ,
+            ImageField::new('image')
+                ->setLabel('image')
+                ->setHelp("Image du produit en 600x600px")
+                ->setBasePath("uploads")
+                ->setUploadedFileNamePattern("[year]-[month]-[day]-[contenthash].[extension]")
+                ->setUploadDir("/public/uploads")
+                ->setRequired($required),
+            NumberField::new('prix')
+                ->setLabel("Prix H.T")
+                ->setHelp("Votre prix H.T du produit sans le cigle €."),
+            AssociationField::new('categorie_id', "Catégorie associé")
         ];
     }
     

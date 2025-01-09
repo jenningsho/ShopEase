@@ -34,6 +34,9 @@ class Produit
     #[ORM\ManyToOne(inversedBy: 'produits')]
     private ?Commande $commande = null;
 
+    #[ORM\ManyToOne(inversedBy: 'produits')]
+    private ?Categorie $categorie_id = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -107,6 +110,18 @@ class Produit
     public function setCommande(?Commande $commande): static
     {
         $this->commande = $commande;
+
+        return $this;
+    }
+
+    public function getCategorieId(): ?Categorie
+    {
+        return $this->categorie_id;
+    }
+
+    public function setCategorieId(?Categorie $categorie_id): static
+    {
+        $this->categorie_id = $categorie_id;
 
         return $this;
     }

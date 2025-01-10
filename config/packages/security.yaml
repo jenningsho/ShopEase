@@ -51,11 +51,22 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
-        - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api,       roles: [ROLE_ADMIN, ROLE_USER] }
+
+        # Routes Publiques
+        - { path: ^/api/produits, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET]}
+
+        # Route d'authentification sans token
+        - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [POST] }
+        - { path: ^/api/register, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [POST] }
+
+        # Routes protégés avec token
+        - { path: ^/api/produits, role: ROLE_ADMIN, methods: [POST, PUT, DELETE] }
+        - { path: ^/api,       roles: PUBLIC_ACCESS }
+
+        
 
 when@test:
     security:

@@ -52,6 +52,14 @@ class ProduitCrudController extends AbstractCrudController
                 ->setUploadedFileNamePattern("[year]-[month]-[day]-[contenthash].[extension]")
                 ->setUploadDir("/public/uploads")
                 ->setRequired($required),
+            NumberField::new("stock")
+                ->setLabel("Stock disponible")
+                ->setHelp("Indiquer le stock disponible de l'article")
+                ->setFormTypeOption('input', 'number') 
+                ->setFormTypeOption("attr", [
+                    "step" => 1, // permet seulement les entiers
+                    "min" => 0 // Optionnel : pour forcer un minimum
+                ]),
             NumberField::new('prix')
                 ->setLabel("Prix H.T")
                 ->setHelp("Votre prix H.T du produit sans le cigle €."),

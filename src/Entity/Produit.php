@@ -6,6 +6,8 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ProduitRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ApiResource()]
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
@@ -17,21 +19,38 @@ class Produit
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank( message:"Le nom ne peut pas être vide")]
+    #[Assert\Length(
+        max: 255,
+        maxMessage:"Le nom ne peut pas dépasser {{ limit }} caractères."
+    )]
     private ?string $nom = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank( message:"La description ne peut pas être vide")]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank( message:"Le prix ne peut pas être vide")]
+    #[Assert\Positive( message:"La prix doit être positif")]
     private ?float $prix = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank( message:"Le stock ne peut pas être vide.")]
+    #[Assert\PositiveOrZero( message: "Le stock doit être un entier positif ou zéro.")]
     private ?int $stock = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank( message:"L'image ne peut pas être vide")]
+    #[Assert\Length(
+        max:255,
+        maxMessage:"Le chemin de l'image ne peut pas dépasser {{ limit }} caractères."
+    )]
+    #[Assert\Url( message:"Le chemin de l'image doit être une URL valide.")]
     private ?string $image = null;
 
     #[ORM\ManyToOne(inversedBy: 'produits')]
+    #[Assert\NotNull( message: "La catégorie est obligatoire.")]
     private ?Commande $commande = null;
 
     #[ORM\ManyToOne(inversedBy: 'produits')]

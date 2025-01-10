@@ -59,8 +59,8 @@ security:
         - { path: ^/api/produits, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET]}
 
         # Route d'authentification sans token
-        - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [POST] }
-        - { path: ^/api/register, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [POST] }
+        - { path: ^/api/login, roles: PUBLIC_ACCESS, methods: [POST] }
+        - { path: ^/api/register, roles: PUBLIC_ACCESS, methods: [POST] }
 
         # Routes protégés avec token
         - { path: ^/api/produits, role: ROLE_ADMIN, methods: [POST, PUT, DELETE] }

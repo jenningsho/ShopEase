@@ -3,7 +3,7 @@
 // src/Controller/Api/AuthController.php
 namespace App\Controller\Api;
 
-use App\Entity\ApiUser;
+use App\Entity\User;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,7 +39,7 @@ class AuthController extends AbstractController
         }
 
         // Chercher l'utilisateur par email via l'EntityManager
-        $user = $this->entityManager->getRepository(ApiUser::class)->findOneBy(['email' => $data['email']]);
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']]);
 
         if (!$user) {
             return $this->json(['error' => 'Invalid credentials'], Response::HTTP_UNAUTHORIZED);

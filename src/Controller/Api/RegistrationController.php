@@ -3,7 +3,7 @@
 // src/Controller/Api/RegistrationController.php
 namespace App\Controller\Api;
 
-use App\Entity\ApiUser;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,13 +33,13 @@ class RegistrationController extends AbstractController
         }
 
         // Vérifier si l'email est déjà pris
-        $existingUser = $this->entityManager->getRepository(ApiUser::class)->findOneBy(['email' => $data['email']]);
+        $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']]);
         if ($existingUser) {
             return $this->json(['error' => 'Email already taken'], Response::HTTP_BAD_REQUEST);
         }
 
         // Créer un nouvel utilisateur
-        $user = new ApiUser();
+        $user = new User();
         $user->setEmail($data['email']);
         
         // Encoder le mot de passe

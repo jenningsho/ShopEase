@@ -46,11 +46,11 @@ class Produit
         max:255,
         maxMessage:"Le chemin de l'image ne peut pas dépasser {{ limit }} caractères."
     )]
-    #[Assert\Url( message:"Le chemin de l'image doit être une URL valide.")]
+    // #[Assert\Url( message:"Le chemin de l'image doit être une URL valide.")]
     private ?string $image = null;
 
     #[ORM\ManyToOne(inversedBy: 'produits')]
-    #[Assert\NotNull( message: "La catégorie est obligatoire.")]
+    // #[Assert\NotNull( message: "La catégorie est obligatoire.")]
     private ?Commande $commande = null;
 
     #[ORM\ManyToOne(inversedBy: 'produits')]

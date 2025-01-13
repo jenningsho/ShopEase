@@ -7,7 +7,7 @@ security:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
-                class: App\Entity\ApiUser
+                class: App\Entity\User
                 property: email
         # used to reload user from session & other features (e.g. switch_user)
     firewalls:
@@ -56,7 +56,7 @@ security:
         # - { path: ^/profile, roles: ROLE_USER }
 
         # Routes Publiques
-        - { path: ^/api/produits, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET]}
+        - { path: ^/api/produits, roles: PUBLIC_ACCESS, methods: [GET]}
 
         # Route d'authentification sans token
         - { path: ^/api/login, roles: PUBLIC_ACCESS, methods: [POST] }

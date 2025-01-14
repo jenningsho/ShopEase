@@ -25,6 +25,7 @@ security:
             pattern:   ^/api
             stateless: true
             jwt: ~
+            security: false
 
 
         dev:
@@ -57,6 +58,8 @@ security:
 
         # Routes Publiques
         - { path: ^/api/produits, roles: PUBLIC_ACCESS, methods: [GET]}
+        - { path: ^/api/categories, roles: PUBLIC_ACCESS, methods: [GET]}
+        - { path: ^/api/categories/\d+, roles: PUBLIC_ACCESS, methods: [GET]}
 
         # Route d'authentification sans token
         - { path: ^/api/login, roles: PUBLIC_ACCESS, methods: [POST] }
@@ -64,7 +67,8 @@ security:
 
         # Routes protégés avec token
         - { path: ^/api/produits, role: ROLE_ADMIN, methods: [POST, PUT, DELETE] }
-        - { path: ^/api,       roles: PUBLIC_ACCESS }
+
+        - { path: ^/api,       roles: ROLE_USER }
 
         
 

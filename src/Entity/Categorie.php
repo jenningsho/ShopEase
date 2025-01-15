@@ -7,23 +7,38 @@ use App\Repository\CategorieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
 
-#[ApiResource()]
+
+#[ApiResource(operations:[
+    new GetCollection(),
+    new Post(),
+],
+    normalizationContext:['groups' => ['categorie:read']],
+    denormalizationContext:['groups' => ['categorie:write']]
+)]
 #[ORM\Entity(repositoryClass: CategorieRepository::class)]
 class Categorie
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['categorie:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom de la catégorie est obligatoire.")]
+    #[Groups(['categorie:read', 'categorie:write'])]
     private ?string $nom = null;
 
     /**
      * @var Collection<int, Produit>
      */
-    #[ORM\OneToMany(targetEntity: Produit::class, mappedBy: 'categorie_id')]
+    #[ORM\OneToMany(targetEntity: Produit::class, mappedBy: 'categorie')]
+    #[Groups(['categorie:read'])]
     private Collection $produits;
 
     public function __construct()

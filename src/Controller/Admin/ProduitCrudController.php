@@ -63,7 +63,7 @@ class ProduitCrudController extends AbstractCrudController
             NumberField::new('prix')
                 ->setLabel("Prix H.T")
                 ->setHelp("Votre prix H.T du produit sans le cigle €."),
-            AssociationField::new('categorie_id', "Catégorie associé")
+            AssociationField::new('categorie', "Catégorie associé")
         ];
     }
 }

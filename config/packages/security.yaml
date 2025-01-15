@@ -67,6 +67,7 @@ security:
 
         # Routes protégés avec token
         - { path: ^/api/produits, role: ROLE_ADMIN, methods: [POST, PUT, DELETE] }
+        - { path: ^/api/categories, role: ROLE_ADMIN, methods: [POST, PUT, DELETE] }
 
         - { path: ^/api,       roles: ROLE_USER }
 

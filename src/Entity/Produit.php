@@ -3,19 +3,38 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Patch;
 use App\Repository\ProduitRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
+use App\Controller\ProduitByCategorieController;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ApiResource()]
+#[ApiResource(operations:[
+    new GetCollection(),
+    new Post(),
+    new Delete(),
+    new Patch(),
+    new GetCollection(
+        uriTemplate:'/produits/by-categorie/{id}',
+        controller:ProduitByCategorieController::class,
+        normalizationContext: ['groups' => [ 'produit:read']]
+    ),
+]
+)]
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
 class Produit
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['produit:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -24,21 +43,30 @@ class Produit
         max: 255,
         maxMessage:"Le nom ne peut pas dépasser {{ limit }} caractères."
     )]
+    #[Groups(['produit:read'])]
+
     private ?string $nom = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank( message:"La description ne peut pas être vide")]
+    #[Groups(['produit:read'])]
+
     private ?string $description = null;
 
     #[ORM\Column]
     #[Assert\NotBlank( message:"Le prix ne peut pas être vide")]
     #[Assert\Positive( message:"La prix doit être positif")]
+    #[Groups(['produit:read'])]
+
     private ?float $prix = null;
 
     #[ORM\Column]
     #[Assert\NotBlank( message:"Le stock ne peut pas être vide.")]
     #[Assert\PositiveOrZero( message: "Le stock doit être un entier positif ou zéro.")]
+    #[Groups(['produit:read'])]
+
     private ?int $stock = null;
+
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank( message:"L'image ne peut pas être vide")]
@@ -46,6 +74,7 @@ class Produit
         max:255,
         maxMessage:"Le chemin de l'image ne peut pas dépasser {{ limit }} caractères."
     )]
+    #[Groups(['produit:read'])]
     // #[Assert\Url( message:"Le chemin de l'image doit être une URL valide.")]
     private ?string $image = null;
 
@@ -54,7 +83,7 @@ class Produit
     private ?Commande $commande = null;
 
     #[ORM\ManyToOne(inversedBy: 'produits')]
-    private ?Categorie $categorie_id = null;
+    private ?Categorie $categorie = null;
 
     public function getId(): ?int
     {
@@ -135,12 +164,12 @@ class Produit
 
     public function getCategorieId(): ?Categorie
     {
-        return $this->categorie_id;
+        return $this->categorie;
     }
 
-    public function setCategorieId(?Categorie $categorie_id): static
+    public function setCategorieId(?Categorie $categorie): static
     {
-        $this->categorie_id = $categorie_id;
+        $this->categorie = $categorie;
 
         return $this;
     }

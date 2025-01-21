@@ -55,14 +55,19 @@ class ProduitCrudController extends AbstractCrudController
             NumberField::new("stock")
                 ->setLabel("Stock disponible")
                 ->setHelp("Indiquer le stock disponible de l'article")
-                ->setFormTypeOption('input', 'number') 
                 ->setFormTypeOption("attr", [
                     "step" => 1, // permet seulement les entiers
                     "min" => 0 // Optionnel : pour forcer un minimum
                 ]),
             NumberField::new('prix')
-                ->setLabel("Prix H.T")
+                ->setLabel("Prix H.T(en Euros)")
                 ->setHelp("Votre prix H.T du produit sans le cigle €."),
+            NumberField::new("prixTTC")
+                ->setLabel("Prix T.T.C (en Euros)")
+                ->setHelp("Prix T.T.C Calculé automatiquement.")
+                ->setFormTypeOption("disabled", true)
+                ->onlyOnIndex()
+                ->hideOnForm(),
             AssociationField::new('categorie', "Catégorie associé")
         ];
     }

@@ -126,6 +126,16 @@ class Produit
         return $this;
     }
 
+    //Méthode pour calculter le prix T.T.C
+    public function getPrixTTC(): float
+    {
+        if($this->prix === null)
+        {
+            return null;
+        }
+        return $this->prix * (1  + 0.20);
+    }
+
     public function getStock(): ?int
     {
         return $this->stock;

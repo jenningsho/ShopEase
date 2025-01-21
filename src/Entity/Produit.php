@@ -162,12 +162,12 @@ class Produit
         return $this;
     }
 
-    public function getCategorieId(): ?Categorie
+    public function getCategorie(): ?Categorie
     {
         return $this->categorie;
     }
 
-    public function setCategorieId(?Categorie $categorie): static
+    public function setCategorie(?Categorie $categorie): static
     {
         $this->categorie = $categorie;
 

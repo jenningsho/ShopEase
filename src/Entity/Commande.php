@@ -2,11 +2,19 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
 use App\Repository\CommandeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+
+#[ApiResource(operations:[
+    new GetCollection(),
+    new Post(),
+])]
 #[ORM\Entity(repositoryClass: CommandeRepository::class)]
 class Commande
 {
@@ -15,26 +23,45 @@ class Commande
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\ManyToOne(inversedBy: 'commandes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $utilisateur = null;
+
     #[ORM\Column(length: 255)]
     private ?string $statut = null;
 
-    #[ORM\ManyToOne(inversedBy: 'commandes')]
-    private ?User $user = null;
+    #[ORM\Column]
+    private ?\DateTimeImmutable $created_At = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updated_At = null;
 
     /**
-     * @var Collection<int, Produit>
+     * @var Collection<int, CommandeProduit>
      */
-    #[ORM\OneToMany(targetEntity: Produit::class, mappedBy: 'commande')]
-    private Collection $produits;
+    #[ORM\OneToMany(targetEntity: CommandeProduit::class, mappedBy: 'commande')]
+    private Collection $commandeProduits;
 
     public function __construct()
     {
-        $this->produits = new ArrayCollection();
+        $this->commandeProduits = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getUtilisateur(): ?User
+    {
+        return $this->utilisateur;
+    }
+
+    public function setUtilisateur(?User $utilisateur): static
+    {
+        $this->utilisateur = $utilisateur;
+
+        return $this;
     }
 
     public function getStatut(): ?string
@@ -49,42 +76,54 @@ class Commande
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->user;
+        return $this->created_At;
     }
 
-    public function setUser(?User $user): static
+    public function setCreatedAt(\DateTimeImmutable $created_At): static
     {
-        $this->user = $user;
+        $this->created_At = $created_At;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updated_At;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updated_At): static
+    {
+        $this->updated_At = $updated_At;
 
         return $this;
     }
 
     /**
-     * @return Collection<int, Produit>
+     * @return Collection<int, CommandeProduit>
      */
-    public function getProduits(): Collection
+    public function getCommandeProduits(): Collection
     {
-        return $this->produits;
+        return $this->commandeProduits;
     }
 
-    public function addProduit(Produit $produit): static
+    public function addCommandeProduit(CommandeProduit $commandeProduit): static
     {
-        if (!$this->produits->contains($produit)) {
-            $this->produits->add($produit);
-            $produit->setCommande($this);
+        if (!$this->commandeProduits->contains($commandeProduit)) {
+            $this->commandeProduits->add($commandeProduit);
+            $commandeProduit->setCommande($this);
         }
 
         return $this;
     }
 
-    public function removeProduit(Produit $produit): static
+    public function removeCommandeProduit(CommandeProduit $commandeProduit): static
     {
-        if ($this->produits->removeElement($produit)) {
+        if ($this->commandeProduits->removeElement($commandeProduit)) {
             // set the owning side to null (unless already changed)
-            if ($produit->getCommande() === $this) {
-                $produit->setCommande(null);
+            if ($commandeProduit->getCommande() === $this) {
+                $commandeProduit->setCommande(null);
             }
         }
 

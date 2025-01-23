@@ -24,3 +24,5 @@ services:
     # please note that last definitions always *replace* previous ones
     App\Controller\ProduitByCategorieController:
         tags: ['controller.service_arguments']
+
+    App\EventSubscriber\ExceptionSubscriber : ~

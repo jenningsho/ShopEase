@@ -19,7 +19,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 ])]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[UniqueEntity(fields: ['email'], message: 'Cet email existe déja.')]
+#[ORM\HasLifecycleCallbacks]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -35,6 +36,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
+    #[Assert\NotBlank(
+        message: "Le nom est obligatoire"
+    )]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: "Le nom ne peut pas dépasser {{ limit }} caractères."
+    )]
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
@@ -50,7 +58,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Assert\Length(
         groups: ['registration'],
-        min:6
+        min:6,
+        minMessage: "Le mot de passe doit avoir au moins {{ limit }} caractères."
     )]
     #[Assert\NotBlank(
         groups: ['registration']
@@ -217,5 +226,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function setCreationTimestamps(): void
+    {
+        $this->created_at = new \DateTime();
+        $this->updated_at = new \DateTime();
+    }
+
+    #[ORM\PreUpdate]
+    public function setUpdateTimestamps(): void
+    {
+        $this->updated_at = new \DateTime();
     }
 }

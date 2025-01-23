@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use App\Repository\CategorieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -17,11 +18,13 @@ use ApiPlatform\Metadata\Post;
 #[ApiResource(operations:[
     new GetCollection(),
     new Post(),
+    new Delete()
 ],
     normalizationContext:['groups' => ['categorie:read']],
     denormalizationContext:['groups' => ['categorie:write']]
 )]
 #[ORM\Entity(repositoryClass: CategorieRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Categorie
 {
     #[ORM\Id]
@@ -50,6 +53,8 @@ class Categorie
 
     public function __construct()
     {
+        $this->created_at = new \DateTime(); 
+        $this->updated_at = new \DateTime(); 
         $this->produits = new ArrayCollection();
     }
 
@@ -70,10 +75,19 @@ class Categorie
         return $this;
     }
 
+    // transforme l'objet en chaine de caracteres
     public function __toString() : string
     {
         return $this->nom;
     }
+
+    // Met à jour la date à chaque modification
+    #[ORM\PreUpdate]
+    public function updateTimeStamps(): void
+    {
+        $this->updated_at = new \DateTime();
+    }
+
 
     /**
      * @return Collection<int, Produit>

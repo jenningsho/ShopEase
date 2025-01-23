@@ -29,23 +29,24 @@ class RegistrationController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
         if (empty($data['email']) || empty($data['password'])) {
-            return $this->json(['error' => 'Email and password are required'], Response::HTTP_BAD_REQUEST);
+            return $this->json(['error' => 'L\'email et le mot de passe sont requis'], Response::HTTP_BAD_REQUEST);
         }
 
         // Vérifier si l'email est déjà pris
         $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']]);
         if ($existingUser) {
-            return $this->json(['error' => 'Email already taken'], Response::HTTP_BAD_REQUEST);
+            return $this->json(['error' => 'Email déja utilisé'], Response::HTTP_BAD_REQUEST);
         }
 
         // Créer un nouvel utilisateur
         $user = new User();
         $user->setEmail($data['email']);
+        $user->setNom($data['nom']);
         
         // Encoder le mot de passe
         $hashedPassword = $this->passwordHasher->hashPassword($user, $data['password']);
-        $user->setPassword($hashedPassword);
-        $user->setRoles(['ROLE_USER']);  // Role par défaut
+        $user->setPassword($hashedPassword); // On Set le mot de passe hashé
+        $user->setRoles(['ROLE_USER']);  // On set le Role_USER par défaut
 
         // Sauvegarder l'utilisateur
         $this->entityManager->persist($user);

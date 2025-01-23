@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Patch;
@@ -31,6 +30,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 ]
 )]
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Produit
 {
     #[ORM\Id]
@@ -89,11 +89,26 @@ class Produit
     #[ORM\OneToMany(targetEntity: CommandeProduit::class, mappedBy: 'produit')]
     private Collection $commandeProduits;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $created_at = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $updated_at = null;
+
     public function __construct()
     {
+        $this->created_at = new \DateTime(); 
+        $this->updated_at = new \DateTime(); 
         $this->commandeProduits = new ArrayCollection();
     }
 
+    // Met à jour la date à chaque modification
+    #[ORM\PreUpdate]
+    public function updateTimeStamps(): void
+    {
+        $this->updated_at = new \DateTime();
+    }
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -135,7 +150,7 @@ class Produit
         return $this;
     }
 
-    //Méthode pour calculter le prix T.T.C
+    // Méthode pour calculter le prix T.T.C
     public function getPrixTTC(): float
     {
         if($this->prix === null)
@@ -207,6 +222,30 @@ class Produit
                 $commandeProduit->setProduit(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $created_at): static
+    {
+        $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updated_at): static
+    {
+        $this->updated_at = $updated_at;
 
         return $this;
     }

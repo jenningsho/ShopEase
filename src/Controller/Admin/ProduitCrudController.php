@@ -6,6 +6,7 @@ use App\Entity\Produit;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
@@ -68,7 +69,11 @@ class ProduitCrudController extends AbstractCrudController
                 ->setFormTypeOption("disabled", true)
                 ->onlyOnIndex()
                 ->hideOnForm(),
-            AssociationField::new('categorie', "Catégorie associé")
+            AssociationField::new('categorie', "Catégorie associé"),
+            DateTimeField::new('created_at', 'Date de création')
+                ->hideOnForm(),
+            DateTimeField::new("updated_at", "Date de mise à jour")
+                ->hideOnForm()
         ];
     }
 }

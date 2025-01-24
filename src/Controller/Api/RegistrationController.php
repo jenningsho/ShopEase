@@ -53,7 +53,7 @@ class RegistrationController extends AbstractController
         $this->entityManager->flush();
 
         // Retourner une réponse
-        return $this->json(['message' => 'User created successfully'], Response::HTTP_CREATED);
+        return $this->json(['message' => 'Utilisateur crée avec succes !'], Response::HTTP_CREATED);
     }
 }
 

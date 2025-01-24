@@ -35,19 +35,19 @@ class AuthController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         if (empty($data['email']) || empty($data['password'])) {
-            return $this->json(['error' => 'Email and password are required'], Response::HTTP_BAD_REQUEST);
+            return $this->json(['error' => 'L\adresse email et le mot de passe sont requisent'], Response::HTTP_BAD_REQUEST);
         }
 
         // Chercher l'utilisateur par email via l'EntityManager
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']]);
 
         if (!$user) {
-            return $this->json(['error' => 'Invalid credentials'], Response::HTTP_UNAUTHORIZED);
+            return $this->json(['error' => 'Aucune utilisateur avec cette adresse mail.'], Response::HTTP_UNAUTHORIZED);
         }
 
         // Vérifier si le mot de passe est valide
         if (!$this->passwordHasher->isPasswordValid($user, $data['password'])) {
-            return $this->json(['error' => 'Invalid credentials'], Response::HTTP_UNAUTHORIZED);
+            return $this->json(['error' => 'Mot de passe incorrect. Veuilez re-essayer.'], Response::HTTP_UNAUTHORIZED);
         }
 
         // Générer le token JWT
